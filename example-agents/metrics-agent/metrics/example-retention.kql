@@ -1,0 +1,48 @@
+// ============================================================
+// Example KQL: Customer Retention (Week-over-Week Churn)
+// ============================================================
+//
+// Replace:
+//   - <YourTable>       → your telemetry table name
+//   - <timestamp_col>   → the datetime column in your table
+//   - <feature_filter>  → a where clause scoping to your feature
+//   - <customer_id_col> → the column identifying unique customers
+//
+// Cluster: <your-cluster>.kusto.windows.net
+// Database: <your-db>
+// ============================================================
+
+let WeekEnd = startofday(now()) - (dayofweek(now()) + 1d);
+let WeekStart = WeekEnd - 7d;
+let PriorWeekStart = WeekEnd - 14d;
+//
+// --- Customers active this week ---
+let ThisWeekCustomers =
+    <YourTable>
+    | where <timestamp_col> between (WeekStart .. WeekEnd)
+    | where <feature_filter>
+    | distinct <customer_id_col>;
+//
+// --- Customers active last week ---
+let LastWeekCustomers =
+    <YourTable>
+    | where <timestamp_col> between (PriorWeekStart .. WeekStart)
+    | where <feature_filter>
+    | distinct <customer_id_col>;
+//
+// --- Retention math ---
+let Retained = ThisWeekCustomers | join kind=inner LastWeekCustomers on <customer_id_col> | count;
+let LastWeekTotal = LastWeekCustomers | count;
+let ThisWeekTotal = ThisWeekCustomers | count;
+let NewCustomers = ThisWeekCustomers | join kind=leftanti LastWeekCustomers on <customer_id_col> | count;
+let Churned = LastWeekCustomers | join kind=leftanti ThisWeekCustomers on <customer_id_col> | count;
+//
+print
+    LastWeekCustomers = toscalar(LastWeekTotal),
+    ThisWeekCustomers = toscalar(ThisWeekTotal),
+    Retained          = toscalar(Retained),
+    NewCustomers      = toscalar(NewCustomers),
+    Churned           = toscalar(Churned),
+    RetentionPct      = round(100.0 * toscalar(Retained) / toscalar(LastWeekTotal), 2),
+    ChurnPct          = round(100.0 * toscalar(Churned) / toscalar(LastWeekTotal), 2),
+    GrowthPct         = round(100.0 * (toscalar(ThisWeekTotal) - toscalar(LastWeekTotal)) / toscalar(LastWeekTotal), 2)

@@ -100,6 +100,15 @@ Use `/foundry-agent` to explicitly invoke this skill:
 
 If multiple agents exist and none specified, you'll be prompted to choose.
 
+## Example Agents
+
+The `example-agents/` folder contains ready-to-customize agent templates:
+
+| Agent | Type | Description |
+|-------|------|-------------|
+| [papercut-agent](example-agents/papercut-agent/) | Foundry Agent | Print queue troubleshooting via a Foundry endpoint |
+| [metrics-agent](example-agents/metrics-agent/) | Custom Engine Agent | Weekly KQL metrics → charts → one-page report |
+
 ## Resources
 
 - [Microsoft Foundry Docs](https://learn.microsoft.com/azure/ai-foundry/)

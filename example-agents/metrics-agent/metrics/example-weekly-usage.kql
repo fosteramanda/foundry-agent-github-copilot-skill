@@ -1,0 +1,55 @@
+// ============================================================
+// Example KQL: Weekly Usage with WoW and Wo4W Comparison
+// ============================================================
+//
+// This is a TEMPLATE. Replace the following before running:
+//   - <YourTable>       → your telemetry table name
+//   - <timestamp_col>   → the datetime column in your table
+//   - <feature_filter>  → a where clause scoping to your feature
+//   - <customer_id_col> → the column identifying unique customers
+//
+// Cluster: <your-cluster>.kusto.windows.net
+// Database: <your-db>
+// ============================================================
+
+let WeekEnd = startofday(now()) - (dayofweek(now()) + 1d);  // most recent Saturday (end of week)
+let WeekStart = WeekEnd - 7d;
+let PriorWeekStart = WeekEnd - 14d;
+let FourWeekStart = WeekEnd - 28d;
+//
+// --- Current week ---
+let CurrentWeek =
+    <YourTable>
+    | where <timestamp_col> between (WeekStart .. WeekEnd)
+    | where <feature_filter>
+    | summarize
+        TotalActions   = count(),
+        UniqueCustomers = dcount(<customer_id_col>)
+    | extend Week = "Current";
+//
+// --- Prior week ---
+let PriorWeek =
+    <YourTable>
+    | where <timestamp_col> between (PriorWeekStart .. WeekStart)
+    | where <feature_filter>
+    | summarize
+        TotalActions   = count(),
+        UniqueCustomers = dcount(<customer_id_col>)
+    | extend Week = "Prior";
+//
+// --- 4-week average ---
+let FourWeekAvg =
+    <YourTable>
+    | where <timestamp_col> between (FourWeekStart .. WeekEnd)
+    | where <feature_filter>
+    | summarize
+        TotalActions   = count(),
+        UniqueCustomers = dcount(<customer_id_col>)
+    | extend
+        TotalActions    = TotalActions / 4,
+        UniqueCustomers = UniqueCustomers / 4,
+        Week = "4WeekAvg";
+//
+// --- Combine ---
+union CurrentWeek, PriorWeek, FourWeekAvg
+| project Week, TotalActions, UniqueCustomers
