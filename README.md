@@ -9,7 +9,13 @@ A GitHub Copilot skill that connects to Microsoft Foundry Agent applications. Su
 
 ## Setup
 
-### 1. Copy skill to your repository
+Choose **one** of the two options below depending on how you want to use the skill.
+
+### Option A: Add to a GitHub repository
+
+Use this when you want the skill available in a specific project repo (shared with your team via source control).
+
+Copy the skill files into your repo:
 
 ```
 your-repo/.github/skills/foundry-agent/
@@ -17,10 +23,25 @@ your-repo/.github/skills/foundry-agent/
 ├── query_foundry_agent.py
 ├── configure_agents.py
 ├── agents.yaml.example
+└── agents.yaml          # your config (gitignored)
+```
+
+### Option B: Use locally with Copilot CLI
+
+Use this when you want the skill available across all your projects without a GitHub repo. Copy the skill files to your local Copilot skills directory:
+
+```
+~/.copilot/skills/foundry-agent/
+├── SKILL.md
+├── query_foundry_agent.py
+├── configure_agents.py
+├── agents.yaml.example
 └── agents.yaml          # your config
 ```
 
-### 2. Configure agents
+No GitHub repo needed — Copilot picks up skills from this directory automatically.
+
+### Configure agents
 
 **Option A: Interactive setup via Copilot (recommended)**
 
@@ -41,7 +62,7 @@ Names are validated automatically - if you enter "Code Review", it will suggest 
 
 **Option B: Manual configuration**
 
-Create `agents.yaml`:
+Copy `agents.yaml.example` to `agents.yaml` and configure your agents:
 
 ```yaml
 agents:
