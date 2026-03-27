@@ -1,0 +1,46 @@
+# Foundry Agents Configuration
+# Copy this file to agents.yaml and configure your agents
+#
+# Three configuration styles are supported and CAN BE MIXED:
+#
+# Style 1: Project endpoint + agent_name (uses Azure AI Projects SDK)
+#   project_endpoint: https://<your-project>.services.ai.azure.com/api/projects/<your-project>
+#   agents:
+#     - name: my-agent
+#       description: What this agent does
+#       agent_name: MyAgentName
+#
+# Style 2: Project endpoint + agent_name + version (pins a specific agent version)
+#   project_endpoint: https://<your-project>.services.ai.azure.com/api/projects/<your-project>
+#   agents:
+#     - name: my-agent
+#       description: What this agent does
+#       agent_name: MyAgentName
+#       version: 2
+#
+# Style 3: Application endpoint (direct HTTP calls, no project_endpoint needed)
+#   agents:
+#     - name: my-agent
+#       description: What this agent does
+#       endpoint: https://<your-project>.services.ai.azure.com/api/projects/<your-project>/applications/<AgentName>/protocols/openai/responses?api-version=2025-11-15-preview
+
+# Styles 1 & 2 require a project_endpoint at the top level:
+# project_endpoint: https://<your-project>.services.ai.azure.com/api/projects/<your-project>
+
+agents:
+  # Style 1: Project endpoint + agent_name
+  - name: general
+    description: General-purpose Foundry agent for broad Q&A and reasoning tasks
+    agent_name: GeneralAgent
+
+  # Style 2: Project endpoint + agent_name + version
+  - name: code-review
+    description: Specialized agent for code review, analysis, and best practices
+    agent_name: CodeReviewAgent
+    version: 2
+
+  # Style 3: Application endpoint
+  - name: security
+    description: Security-focused agent for vulnerability analysis and compliance
+    endpoint: https://your-project.services.ai.azure.com/api/projects/your-project/applications/security-agent/protocols/openai/responses?api-version=2025-11-15-preview
+ 
