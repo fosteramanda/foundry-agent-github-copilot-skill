@@ -1,0 +1,85 @@
+# Foundry GitHub Copilot Skill
+
+A GitHub Copilot skill that connects to Microsoft Foundry Agent applications. Supports multiple named agents.
+
+## Requirements
+
+- Python 3.8+
+- Azure CLI installed
+
+## Setup
+
+### 1. Copy skill to your repository
+
+```
+your-repo/.github/skills/foundry-agent/
+├── SKILL.md
+├── query_foundry_agent.py
+├── configure_agents.py
+├── agents.yaml.example
+└── agents.yaml          # your config
+```
+
+### 2. Configure agents
+
+**Option A: Interactive setup via Copilot (recommended)**
+
+Just ask Copilot to add an agent - it will guide you through:
+
+```
+You: "Add a Foundry agent"
+Copilot: "What name would you like for this agent?"
+You: "code-review"
+Copilot: "What does this agent do?"
+You: "Code review and best practices"
+Copilot: "What is the endpoint URL?"
+You: <paste URL>
+Copilot: "✓ Agent 'code-review' added!"
+```
+
+Names are validated automatically - if you enter "Code Review", it will suggest "code-review".
+
+**Option B: Manual configuration**
+
+Create `agents.yaml`:
+
+```yaml
+agents:
+  - name: general
+    description: General-purpose agent for broad Q&A
+    endpoint: https://your-project.services.ai.azure.com/.../general-agent/...
+
+  - name: code-review
+    description: Specialized agent for code review
+    endpoint: https://your-project.services.ai.azure.com/.../code-review-agent/...
+```
+
+> **Note:** Python dependencies and Azure authentication are handled automatically.
+
+## Usage
+
+### Query Agents
+
+- "Ask Foundry about this code"
+- "Ask the code-review agent to check this"
+- "Have the security agent scan for vulnerabilities"
+- "Talk to Foundry about best practices"
+- "Query Foundry about architecture patterns"
+- "Send this to the general agent"
+
+### Configure Agents
+
+Use `/foundry-agent` to explicitly invoke this skill:
+
+- "/foundry-agent add this agent https://..." - **easiest way** - discovers name/description from the endpoint
+- "/foundry-agent add an agent" - interactive guided setup
+- "/foundry-agent list agents" - show configured agents
+- "/foundry-agent show agents" - show configured agents
+- "/foundry-agent remove security agent" - delete an agent
+
+If multiple agents exist and none specified, you'll be prompted to choose.
+
+## Resources
+
+- [Microsoft Foundry Docs](https://learn.microsoft.com/azure/ai-foundry/)
+- [Copilot Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
